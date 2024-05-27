@@ -165,7 +165,13 @@ class Trainer:
         return dl
 
     def run_trainer(self, use_vanilla=False):
-        self.train_dl = self.get_dl(transforms.Compose([transforms.ToTensor()]), train=True)
+        if use_vanilla:
+            # use data augmentation for vanilla CNN
+            self.train_dl = self.get_dl(transforms.Compose([transforms.ToTensor(), RandomRot90()]), train=True)
+        else:
+            # do not use data augmentation for group CNN
+            self.train_dl = self.get_dl(transforms.Compose([transforms.ToTensor()]), train=True)
+        
         self.test_dl = self.get_dl(transforms.Compose([transforms.ToTensor(), RandomRot90()]), train=False)
 
         if use_vanilla:
