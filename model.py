@@ -129,11 +129,11 @@ class VanillaCNN(nn.Module):
             ),
         )
 
-        self.linear = nn.Linear(self.hidden_channel_number * self.image_size ** 2, self.out_channels)
+        self.linear = nn.Linear(self.hidden_channel_number, self.out_channels)
 
     def forward(self, x):
         x = self.convs(x)
-        x = x.view(x.shape[0], -1)
+        x = x.mean(dim=[-2, -1])
         x = self.linear(x)
         return x
 
