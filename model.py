@@ -181,7 +181,7 @@ class Trainer:
 
         from pathlib import Path
         if self.load_checkpoint and Path(self.checkpoint_file).exists():
-            self.model.load_state_dict(torch.load(self.checkpoint_file))
+            self.model.load_state_dict(torch.load(self.checkpoint_file, map_location=self.device))
             if self.test_model:
                 self.test()
                 return

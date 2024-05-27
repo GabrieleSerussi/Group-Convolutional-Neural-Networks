@@ -1,5 +1,6 @@
 # Group-Convolutional-Neural-Networks
-Group Convolutional Neural Networks (G-CNNs) are a generalization of CNNs that reduces the data complexity by exploiting symmetries using Group Theory (you can learn more on the [original paper](https://arxiv.org/abs/1602.07576)). 
+Group Convolutional Neural Networks (G-CNNs) are a generalization of CNNs that reduces the data complexity by exploiting symmetries using Group Theory (you can learn more on the [original paper](https://arxiv.org/abs/1602.07576)).
+This type of architecture falls under the category of **Geometric Deep Learning**, which is a subfield of Deep Learning that focuses on the development of algorithms that can learn from data with a known geometric structure.
 This method provides an alternative to data augmentation, it increases the expressive capacity
 of the network without increasing the number of parameters by using weight sharing.
 
