@@ -9,6 +9,7 @@ from torch.optim import Adam
 from tqdm.auto import tqdm
 import torch.nn.functional as F
 
+# Number of elements in the group
 GROUP_ORDER = 4
 
 class LiftingConvolution(nn.Conv2d):
