@@ -105,6 +105,37 @@ class GroupCNN(nn.Module):
         x = self.linear(x)
         return x
 
+class VanillaCNN(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.hidden_channel_number = 16
+        self.hidden_layer_number = 5
+        self.out_channels = 10
+        self.kernel_size = 3
+        self.padding = 1
+        self.image_size = 28
+
+        self.convs = nn.Sequential(
+            nn.Conv2d(in_channels=1, out_channels=self.hidden_channel_number, kernel_size=self.kernel_size,
+                      padding=self.padding),
+            nn.ReLU(),
+            *(
+                nn.Sequential(
+                    nn.Conv2d(in_channels=self.hidden_channel_number, out_channels=self.hidden_channel_number,
+                              kernel_size=self.kernel_size, padding=self.padding),
+                    nn.ReLU()
+                )
+                for _ in range(self.hidden_layer_number)
+            ),
+        )
+
+        self.linear = nn.Linear(self.hidden_channel_number * self.image_size ** 2, self.out_channels)
+
+    def forward(self, x):
+        x = self.convs(x)
+        x = x.view(x.shape[0], -1)
+        x = self.linear(x)
+        return x
 
 class Trainer:
     def __init__(self):
@@ -133,11 +164,14 @@ class Trainer:
         dl = DataLoader(ds, batch_size=self.batch_size, shuffle=train, pin_memory=True)
         return dl
 
-    def run_trainer(self):
+    def run_trainer(self, use_vanilla=False):
         self.train_dl = self.get_dl(transforms.Compose([transforms.ToTensor()]), train=True)
         self.test_dl = self.get_dl(transforms.Compose([transforms.ToTensor(), RandomRot90()]), train=False)
 
-        self.model = GroupCNN().to(self.device)
+        if use_vanilla:
+            self.model = VanillaCNN().to(self.device)
+        else:
+            self.model = GroupCNN().to(self.device)
 
         from pathlib import Path
         if self.load_checkpoint and Path(self.checkpoint_file).exists():
