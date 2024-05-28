@@ -1,4 +1,3 @@
-from functools import partial
 import numpy as np
 import torch
 import torch.nn as nn
@@ -7,7 +6,7 @@ from torchvision import transforms
 from torchvision.datasets import FashionMNIST
 from torch.optim import Adam
 from tqdm.auto import tqdm
-import torch.nn.functional as F
+import os
 
 # Number of elements in the group
 GROUP_ORDER = 4
@@ -147,7 +146,7 @@ class Trainer:
         self.epochs = 50
         self.batch_size = 128
         self.subset_size = None
-        self.checkpoint_file = "./model.pt"
+        self.checkpoint_file = os.path.join(".", "trained_models")
         self.load_checkpoint = True
         self.test_model = True
         if torch.cuda.is_available():
@@ -168,9 +167,11 @@ class Trainer:
         if use_vanilla:
             # use data augmentation for vanilla CNN
             self.train_dl = self.get_dl(transforms.Compose([transforms.ToTensor(), RandomRot90()]), train=True)
+            self.checkpoint_file = os.path.join(self.checkpoint_file, "vanilla_cnn_model.pt")
         else:
             # do not use data augmentation for group CNN
             self.train_dl = self.get_dl(transforms.Compose([transforms.ToTensor()]), train=True)
+            self.checkpoint_file = os.path.join(self.checkpoint_file, "model.pt")
         
         self.test_dl = self.get_dl(transforms.Compose([transforms.ToTensor(), RandomRot90()]), train=False)
 
@@ -228,6 +229,8 @@ class Trainer:
 
 
 if __name__ == '__main__':
-    #torch.manual_seed(2)
     trainer = Trainer()
     trainer.run_trainer()
+
+    vanilla_trainer = Trainer()
+    vanilla_trainer.run_trainer(use_vanilla=True)
